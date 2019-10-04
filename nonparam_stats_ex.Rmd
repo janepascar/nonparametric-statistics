@@ -1,0 +1,270 @@
+---
+title: ""
+author: "Jane Pascar"
+output: html_document
+fontsize: 12pt
+---
+```{r include=FALSE}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(BSDA)
+library(MultNonParam)
+```
+## Paired T-Test
+#### Example 1
+Trace metals in drinking water affect the flavor of the water, and unusually 
+high concentrations can pose a health hazard. A researcher reported the 
+trace-metals concentrations for both surface water and bottom water in six 
+different locations in the South Indian River. Is there any evidence to show 
+a difference of metal concentrations between the two layers of water?
+
+```{r echo=FALSE}
+trace_metals <- data.frame(Location = c(1:6),
+                           Bottom = c(.430,.266,.567,.531,.707,.716),
+                           Surface = c(.415,.238,.390,.410,.605,.609),
+                           Difference = c(.015,.028,.177,.121,.102,.107))
+knitr::kable(trace_metals, 
+             col.names = c("Location", "Bottom", "Surface", "$d = Bottom - Surface$"),
+             align = "c") %>%
+  kable_styling() %>%
+  scroll_box(width = "800px", height = "200px")
+```
+  
+Hypotheses:  
+$H_{0}: \mu_{d}=0$  
+$H_{A}: \mu_{d} \neq 0$  (two-tailed)  
+  
+$\alpha$ = 0.05  
+```{r}
+bottom <- c(.430, .266, .567, .531, .707, .716)
+surface <- c(.415, .238, .390, .410, .605, .609)
+
+t.test(x = bottom, y = surface, 
+       alternative = "two.sided",
+       paired = TRUE, # paired by location
+       conf.level = .95)
+```
+Conclusion:  
+Since $p-value = 0.014 < \alpha = 0.05$, I have enough evidence to reject the 
+$H_{0}$. There is support for the claim that there are different trace metal 
+concentrations at the bottom and the surface of the river.  
+
+## One-Sample Sign Test  
+#### Example 1  
+In a study of transit times, the median transit time in a series of subjects 
+was 3.50 seconds. Suppose that another team repeated the procedure on a sample 
+of 11 subjects. Could the second team conclude, at the 0.05 level of 
+significance, that the median transit time in the population from which its 
+sample was drawn is different than 3.50 seconds?
+```{r echo=FALSE}
+transit_time <- data.frame(Subject = c(1:11),
+                           time = c(1.8,3.3,5.65,2.25,2.5,
+                                    3.5,2.75,3.25,3.1,2.7,3))
+knitr::kable(transit_time, 
+             col.names = c("Subject", "Transit Time"),
+             align = "c") %>%
+  kable_styling() %>%
+  scroll_box(width = "800px", height = "200px")
+```
+  
+Hypotheses:  
+$H_{0}: M=3.50$  
+$H_{A}: M\neq3.5$  (two-tailed)  
+  
+$\alpha$ = 0.05  
+```{r}
+transit_time <- c(1.8, 3.3, 5.65, 2.25, 2.5, 3.5, 2.75, 3.25, 3.1, 2.7, 3)
+BSDA::SIGN.test(x = transit_time, 
+                md = 3.5, 
+                alternative = "two.sided", 
+                conf.level = .95)
+```
+Conclusion:  
+Since $p-value = 0.02148 < \alpha = 0.05$, I have enough evidence to reject the 
+$H_{0}$. There is support for the claim that the population median is not 3.50 
+seconds.    
+  
+#### Example 2
+Fifteen heroin addicts were asked to state the age at which they first started 
+using the drug. The results are shown in the table below. Can one conclude from 
+these data that the median age of the sampled population is 20?  
+```{r echo=FALSE}
+heroin_age <- data.frame(Subject = c(1:15),
+                         Age = c(22,24,37,28,15,14,22,16,18,17,
+                                   23,16,20,18,15))
+knitr::kable(heroin_age, 
+             align = "c") %>%
+  kable_styling() %>%
+  scroll_box(width = "800px", height = "200px")
+```
+  
+Hypotheses:  
+$H_{0}: M=20$  
+$H_{A}: M\neq20$  (two-tailed)  
+  
+$\alpha$ = 0.05  
+```{r}
+heroin_age <- c(22, 24, 37, 28, 15, 14, 22, 16, 18, 17, 23, 16, 20, 18, 15)
+BSDA::SIGN.test(x = heroin_age, 
+                md = 20, 
+                alternative = "two.sided", 
+                conf.level = .95)
+```
+Conclusion:  
+Since $p-value = 0.7905 > \alpha = 0.05$, I have do not have enough evidence to 
+reject the $H_{0}$. The median age of heroin addicts is not 20.    
+  
+## One-Sample Wilcoxon Signed-Rank Test
+#### Example 1
+In a study of drug abuse in a suburban area, investigators found that the 
+median IQ of arrested abusers who were 16 years of age or older was 107. 
+Suppose that a researcher wishes to know whether to conclude that the median IQ 
+of arrested abusers who are 16 or older in another suburban area is different 
+from 107. The following table shows the IQs of a random sample of 15 persons 
+from the population of interest. What can the researcher conclude?
+```{r echo=FALSE}
+drug_iq <- data.frame(Subject = c(1:15),
+                         IQ = c(99,100,90,94,135,108,107,111,119,104,127,109,
+                                117,105,125))
+knitr::kable(drug_iq, 
+             align = "c") %>%
+  kable_styling() %>%
+  scroll_box(width = "800px", height = "200px")
+```
+  
+Hypotheses:  
+$H_{0}: M=107$  
+$H_{A}: M\neq107$  (two-tailed)  
+  
+$\alpha$ = 0.05  
+```{r}
+drug_iq <- c(99, 100, 90, 94, 135, 108, 107, 111, 
+             119, 104, 127, 109, 117, 105, 125)
+wilcox.test(x = drug_iq, 
+            alternative = "two.sided", 
+            mu = 107,
+            conf.level = .05,
+            exact = F)
+```
+Conclusion:  
+Since $p-value = 0.4702 > \alpha = 0.05$, I have do not have enough evidence to 
+reject the $H_{0}$. The median IQ of arrested abusers is not 107.  
+  
+#### Example 2
+A test to measure knowledge of current events was given to a sample of 25 
+elementary school children from an inner-city neighborhood. The scores are in 
+the following table. Can one conclude from these data that the population 
+median is 70? 
+```{r echo=FALSE}
+children_scores <- data.frame(Subject = c(1:25),
+                              Scores = c(80,68,30,67,70,62,69,65,53,29,65,68,62,
+                                         56,46,48,39,72,36,69,40,61,54,53,25))
+knitr::kable(children_scores, 
+             align = "c") %>%
+  kable_styling() %>%
+  scroll_box(width = "800px", height = "200px")
+```
+  
+Hypotheses:  
+$H_{0}: M=70$  
+$H_{A}: M\neq70$ (two-tailed)  
+  
+$\alpha$ = 0.05  
+```{r}
+children_scores <- c(80, 68, 30, 67, 70, 62, 69, 65, 53, 29, 65, 68, 62, 
+                     56, 46, 48, 39, 72, 36, 69, 40, 61, 54, 53, 25)
+wilcox.test(x = children_scores, 
+            alternative = "two.sided", 
+            mu = 70,
+            conf.level = .05,
+            exact = F)
+```
+Conclusion:  
+Since $p-value = 0.0001357 < \alpha = 0.05$, I have enough evidence to 
+reject the $H_{0}$. The median score of elementary school children on the 
+current-events test is not 70.  
+  
+## Two-Sample Median Test  
+#### Example 1
+The stroke-index values were measured for patients admitted to a university 
+hospital. We wish to know whether these data provide sufficient evidence to 
+indicate that the medians of the two populations represented by the sample 
+data are different.  
+```{r echo=FALSE}
+stroke_index <- data.frame(samp1 = c(25,25,17,26,18,30,24,21,13,30,20,23,26,12,
+                                     20,37,9,17,37,20,11,32,16,31,46,20,25,17,
+                                     36,54,8,26),
+                           samp2 = c(31,21,38,19,38,41,68,28,43,42,30,20,29,13,
+                                     32,30, rep(NA, 16)))
+options(knitr.kable.NA = '')
+knitr::kable(stroke_index, 
+             col.names = c("Sample 1", "Sample 2"),
+             align = "c") %>%
+  kable_styling() %>%
+  scroll_box(width = "800px", height = "200px")
+```
+  
+Hypotheses:  
+$H_{0}: M_{sample1} = M_{sample2}$  
+$H_{A}: M_{sample1} \neq M_{sample2}$ (two-tailed)  
+  
+$\alpha$ = 0.05  
+```{r}
+samp1 = c(25, 25, 17, 26, 18, 30, 24, 21, 13, 30, 20, 23, 26, 12, 20, 37, 
+          9, 17, 37, 20, 11, 32, 16, 31, 46, 20, 25, 17, 36, 54, 8, 26)
+samp2 = c(31, 21, 38, 19, 38, 41, 68, 28, 43, 42, 30, 20, 29, 13, 32, 30)
+MultNonParam::mood.median.test(x = samp1, y = samp2, exact = TRUE)
+```
+Conclusion:  
+Since $p-value = 0.0305 < \alpha = 0.05$, I have enough evidence to 
+reject the $H_{0}$. The two populations of admitted patients at each of the two 
+hospitals do not have the same median stroke-index values.  
+  
+## Mann-Whitney-Wilcoxon Test  
+#### Example 1
+A study reported the results of an attempt to assess the predictive validity 
+of Klopfer's Prognostic Rating Scale (PRS) with subjects who received behavior 
+modification psychotherapy. Following psychotherapy, the subjects were 
+separtated into two groups: improved and unimproved. We wish to see whether we 
+can conclude on the basis of these data that the two represented populations 
+are different with respect to their medians. 
+```{r echo=FALSE}
+prs_data <- data.frame(Improved = c(2.2,4.1,4.2,5.0,6.3,6.8,6.9,7.1,7.4,7.4,7.7,
+                                    8.2,8.7,9.4,9.5,11.7,11.9),
+                       Unimproved = c(1.7,2.4,3.3,3.9,4.3,5.0,5.1,5.4,
+                                      5.8,6.6, rep(NA,7)))
+options(knitr.kable.NA = '')
+knitr::kable(prs_data, #
+             align = "c") %>%
+  kable_styling() %>%
+  scroll_box(width = "800px", height = "200px")
+```
+  
+Hypotheses:  
+$H_{0}: M_{Improved} = M_{Unimproved}$  
+$H_{A}: M_{Improved} \neq M_{Unimproved}$ (two-tailed)  
+  
+$\alpha$ = 0.05  
+```{r}
+Improved = c(2.2, 4.1, 4.2, 5.0, 6.3, 6.8, 6.9, 7.1, 7.4, 7.4, 7.7, 
+             8.2, 8.7, 9.4, 9.5, 11.7, 11.9)
+Unimproved = c(1.7, 2.4, 3.3, 3.9, 4.3, 5.0, 5.1, 5.4, 5.8, 6.6)
+wilcox.test(x = Improved, y = Unimproved, 
+            alternative = "two.sided", 
+            paired = FALSE, 
+            exact = FALSE, 
+            correct = TRUE, 
+            conf.level = .95)
+```
+Conclusion:  
+Since $p-value = 0.003579 < \alpha = 0.05$, I have enough evidence to 
+reject the $H_{0}$. The two improved and unimproved groups do not have the same 
+median PRS scores.  
+  
+## Paired Two-Sample Sign Test  
+#### Example 1  
+A study investigated the effects of togetherness on heart rate in rats. They 
+recorded the heart rate of 10 rats while they were alone and while in the 
+presence of another rat. The researchers wanted to test if the togetherness in 
+rats increases heart rate. 
