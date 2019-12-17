@@ -1,0 +1,15 @@
+---
+title: "Jane Pascar"
+output: pdf_document
+---
+### Problem 1:
+$H_{0}$ : M = 20, $H_{A}$: M $\neq$ 20
+$/alpha$ = 0.05
+```{r}
+# Problem 1
+success <- 4
+n <- 25
+
+binom.test(x = success, n = n, p = .07, alternative = "greater", conf.level = .95)
+```
+
