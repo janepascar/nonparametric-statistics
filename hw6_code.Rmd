@@ -1,0 +1,57 @@
+---
+title: ""
+author: "Jane Pascar"
+output: pdf_document
+fontsize: 12pt
+geometry: margin=1in
+---
+```{r include=FALSE}
+
+```
+
+## Jane Pascar  
+### HW #6  
+  
+### Problem 1:
+$H_{0}$: $F_{1(Women)}=F_{2(Men)}$  
+$H_{A}$: $F_{1(Women)}{\neq}F_{2(Men)}$  
+$\alpha$ = 0.05  
+```{r echo=F}
+problem1_data <- data.frame(Women = c(21,37,35,54,31,33,42,27,47,26),
+                            Men = c(56,25,43,42,54,33,34,35,47,39))
+print(problem1_data)
+ks.test(x = problem1_data$Women, y = problem1_data$Men, alternative = "two.sided")
+```
+D test statistic = 0.3
+  
+Conclusion: Since the K-S $p-value = 0.7591 > \alpha = 0.05$, I can not reject 
+$H_{0}$. This means that the two samples were drawn from identical populations.
+
+### Problem 2:
+$H_{0}$: $F_{1(MethodA)}=F_{2(MethodB)}$  
+$H_{A}$: $F_{1(MethodB)}{\neq}F_{2(MethodB)}$  
+$\alpha$ = 0.05  
+```{r echo=F}
+problem2_data <- data.frame(A = c(25,22,17,16,19,24,26,21,19,27),
+                            B = c(21,22,14,13,22,22,15,21,23,21))
+print(problem2_data)
+ks.test(x = problem2_data$A, y = problem2_data$B, alternative = "two.sided")
+```
+D test statistic = 0.4
+  
+Conclusion: Since the K-S $p-value = 0.4005 > \alpha = 0.05$, I can not reject 
+$H_{0}$. This means that the two samples were drawn from identical populations.
+
+### R Code:
+```{r echo=T, message=FALSE, warning=FALSE, results='hide', fig.show=FALSE}
+problem1_data <- data.frame(Women = c(21,37,35,54,31,33,42,27,47,26),
+                            Men = c(56,25,43,42,54,33,34,35,47,39))
+print(problem1_data)
+ks.test(x = problem1_data$Women, y = problem1_data$Men, alternative = "two.sided")
+
+problem2_data <- data.frame(A = c(25,22,17,16,19,24,26,21,19,27),
+                            B = c(21,22,14,13,22,22,15,21,23,21))
+print(problem2_data)
+ks.test(x = problem2_data$A, y = problem2_data$B, alternative = "two.sided")
+```
+

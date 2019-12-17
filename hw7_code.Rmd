@@ -1,0 +1,116 @@
+---
+title: ""
+author: "Jane Pascar"
+output: pdf_document
+fontsize: 12pt
+geometry: margin=1in
+---
+```{r include=FALSE}
+
+```
+
+## Jane Pascar  
+### HW #7 
+  
+### Problem 1:
+$H_{0}$ : each correlation coefficient = 0  
+$H_{A}$: each correlation coefficient ${\neq}$ 0  
+$\alpha$ = 0.05
+```{r echo=F}
+problem1_data <- data.frame(pecking.order = c(12,5,11,8,4,6,7,1,14,3,10,15,2,9,13),
+                            friendliness = c(8,1,9,10,6,5,3,7,11,2,12,13,4,14,15))
+plot(x = problem1_data$pecking.order, 
+     y = problem1_data$friendliness)
+cor(x = problem1_data$pecking.order, 
+    y = problem1_data$friendliness, 
+    method = "pearson")
+cor(x = problem1_data$pecking.order, 
+    y = problem1_data$friendliness, 
+    method = "spearman")
+cor(x = problem1_data$pecking.order, 
+    y = problem1_data$friendliness, 
+    method = "kendall")
+```
+Chi-sq test statistic: 35.48 with 1 df
+  
+Conclusion: Since the Fisher's Exact $p-value = 3.45e-10 << \alpha = 0.05$, I can strongly reject 
+$H_{0}$. This means that there is enough evidence to make the claim that 
+opportunity level and labor force mobility are associated.  
+
+### Problem 2:
+$H_{0}$ : The sampled populations are **homogeneous**  
+$H_{A}$: The sampled populations are **not homogeneous**  
+$\alpha$ = 0.05  
+```{r echo=F}
+problem2_data <- matrix(data = c(33,14,23,23), nrow = 2, 
+                dimnames = list(c("Solved", "Not Solved"),
+                                c("Experimental", "Control")))
+print(problem2_data)
+chisq.test(x = problem2_data)
+fisher.test(x = problem2_data)
+```
+Conclusion: Since the Fisher's Exact $p-value = 0.0579 > \alpha = 0.05$, I can not reject 
+$H_{0}$, although it is only slightly greater than $\alpha$. This means that 
+there is not enough evidence to support the claim that the experimental and 
+control groups differ with respect to the proportion of solutions.  
+
+### Problem 3:
+$H_{0}$ : 
+$H_{A}$: 
+$\alpha$ = 0.05
+```{r echo=F}
+problem3_data <- matrix(data = c(3,1,6,3,10,3,1,0,2,2,
+                                 19,2,25,15,22,11,6,12,5,11,
+                                 39,13,49,41,47,25,14,34,11,37,
+                                 14,1,21,35,9,15,5,17,4,8,
+                                 10,12,29,26,26,34,11,23,7,20), nrow = 10, 
+                dimnames = list("Discipline" = c("Geology", "Biochemistry",
+                                                 "Chemisty", "Zoology",
+                                                 "Physics", "Engineering",
+                                                 "Microbiology", "Botany",
+                                                 "Statistics", "Math"),
+                                "Funding Category"= c("A", "B", "C", "D", "E")))
+print(problem3_data)
+chisq.test(x = problem3_data)
+fisher.test(x = problem3_data, simulate.p.value = T, B = 100000)
+
+fit <- ca(problem3_data)
+fviz_ca_biplot(fit, arrows = c(F,T), title = "")
+```
+
+### R Code:
+```{r echo=T, message=FALSE, warning=FALSE, results='hide', fig.show=FALSE}
+library(ca); library(factoextra)
+# Problem 1
+problem1_data <- matrix(data = c(45,6,19,43), nrow = 2, 
+                dimnames = list("Opportunity" = c("Low", "High"),
+                                "Labor Force Mobility" = c("Low", "High")))
+chisq.test(x = problem1_data)
+fisher.test(x = problem1_data)
+
+# Problem 2
+problem2_data <- matrix(data = c(33,14,23,23), nrow = 2, 
+                dimnames = list(c("Solved", "Not Solved"),
+                                c("Experimental", "Control")))
+chisq.test(x = problem2_data)
+fisher.test(x = problem2_data)
+
+# Problem 3
+problem3_data <- matrix(data = c(3,1,6,3,10,3,1,0,2,2,
+                                 19,2,25,15,22,11,6,12,5,11,
+                                 39,13,49,41,47,25,14,34,11,37,
+                                 14,1,21,35,9,15,5,17,4,8,
+                                 10,12,29,26,26,34,11,23,7,20), nrow = 10, 
+                dimnames = list("Discipline" = c("Geology", "Biochemistry",
+                                                 "Chemisty", "Zoology",
+                                                 "Physics", "Engineering",
+                                                 "Microbiology", "Botany",
+                                                 "Statistics", "Math"),
+                                "Funding Category"= c("A", "B", "C", "D", "E")))
+chisq.test(x = problem3_data)
+fisher.test(x = problem3_data, simulate.p.value = T, B = 100000)
+
+fit <- ca(problem3_data)
+fviz_ca_biplot(fit, arrows = c(F,T), title = "")
+```
+

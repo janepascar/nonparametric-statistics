@@ -1,0 +1,58 @@
+---
+title: ""
+author: "Jane Pascar"
+output: pdf_document
+fontsize: 12pt
+geometry: margin=1in
+---
+## Jane Pascar  
+### HW #4  
+  
+### Problem 1:
+$H_{0}$ : p=0.07, $H_{A}$: p > 0.07  
+$\alpha$ = 0.05
+```{r echo=FALSE}
+# Problem 1
+binom.test(x = 4, n = 25, p = .07, alternative = "greater", conf.level = .95)
+```
+Test statistic: $4/25 = 0.16$  
+  
+Conclusion: Since $p-value = .09 > \alpha = 0.05$, I cannot reject $H_{0}$.
+This means that there is not enough evidence to make the claim that 
+the random sample of females have a greater proportion of 
+postive test results compared to the proportion reported by the original 
+researcher's study. 
+
+### Problem 2:
+$H_{0}$ : $p_{1} = p_{2}$, $H_{A}$: $p_{1} \neq p_{2}$  
+$\alpha$ = 0.05
+```{r echo=FALSE}
+rabbits <-
+matrix(c(8,5,9,8),
+       nrow = 2,
+       dimnames = list("2in Arena" = c("Yes", "No"),
+                       "1in Arena" = c("Yes", "No")))
+rabbits
+mcnemar.test(x = rabbits, correct = TRUE)
+```
+Test statistic: chi-squared = 0.64286
+  
+Conclusion: Since $p-value = 0.4227 > \alpha = 0.05$, I cannot reject $H_{0}$.
+This means that there is not enough evidence to make the claim that the size
+of the arena affects the response of rabbit ticks to light.
+  
+### R Code: 
+```{r echo=T, results='hide'}
+# Problem 1
+binom.test(x = 4, n = 25, p = .07, alternative = "greater", conf.level = .95)
+
+# Problem 2
+rabbits <-
+matrix(c(8,5,9,8),
+       nrow = 2,
+       dimnames = list("2in Arena" = c("Yes", "No"),
+                       "1in Arena" = c("Yes", "No")))
+rabbits
+mcnemar.test(x = rabbits, correct = TRUE)
+```
+
